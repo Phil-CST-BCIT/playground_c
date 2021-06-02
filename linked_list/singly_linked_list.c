@@ -9,9 +9,11 @@
     2.2 add
     2.3 find
     2.4 length
-    2.5 add_at
-    2.6 remove
-    2.7 remove_at
+    -2.5 add_at
+    -2.6 remove
+    -2.7 remove_at
+    2.8 remove_head
+    2.9 get
  *
  **/
 
@@ -154,6 +156,55 @@ void free_list(Node* head)
 
 }
 
+Node* remove_head(Node* head) 
+
+{
+
+    if(head == NULL)
+        return NULL;
+
+    Node* temp = head->next;
+
+    head->next = NULL;
+
+    free(head);
+
+    return temp;
+
+}
+
+Node* get(Node* head, size_t i) {
+
+    /** recursive approach */
+    if( i < 0 || i >= length(head))
+        return NULL;
+
+    if(!i)
+        return head;
+
+    --i;
+
+    return get(head->next, i);
+
+    /** iterative approach */
+    // Node* temp = head;
+
+    // size_t j = 0;
+
+    // while(temp != NULL) {
+
+    //     if(i == j)
+    //         return temp;
+
+    //     ++j;
+
+    //     temp = temp->next;
+
+    // }
+
+    // return NULL:
+
+}
 
 int main() 
 
@@ -162,16 +213,18 @@ int main()
     Node* head = NULL;
 
     head = add_node(head, 1);
-
     head = add_node(head, 2);
-
     head = add_node(head, 3);
+    head = add_node(head, 4);
+    head = add_node(head, 5);
+    head = add_node(head, 6);
 
-    // Node* finder = find_node(3, head);
+    Node* n = get(head, 10);
 
-    size_t len = length(head);
-
-    printf("length of the linked list = %lu\n", len);
+    if(n==NULL)
+        printf("null\n");
+    else
+        printf("not null\n");
 
     free_list(head);
 
