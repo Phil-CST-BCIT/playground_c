@@ -117,10 +117,13 @@ size_t length(DLL* head) {
     return l;
 }
 
-bool add_after(DLL* head, int data, size_t position) {
 
+// if we use size_t as the type of position, the actual parameter will have a coerce type conversion
+DLL* add_after(DLL* head, int data, int position) {
+
+    // this will be meaningless if size_t is used
     if(position < 0 )
-        return false;
+        return NULL;
 
     else if(position > 0 && head->next)
         return add_after(head->next, data, --position);
@@ -131,7 +134,7 @@ bool add_after(DLL* head, int data, size_t position) {
 
         if(!head->next){
             head->next = n;
-            return true;
+            return n;
         } else {
 
             n->prev = head;
@@ -139,14 +142,10 @@ bool add_after(DLL* head, int data, size_t position) {
             head->next->prev = n;
             head->next = n;
             
-            return true;
+            return n;
         }
         
     }
-
-    
-
-    
 
 }
 
@@ -171,11 +170,9 @@ int main() {
 
     DLL* tail = add_back(head, 1);
 
-    size_t l = length(head);
+    add_after(head, 12, -2);
 
     print(head);
-
-    printf("length = %lu\n", l);
     
     free_list(head);
 
