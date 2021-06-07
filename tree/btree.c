@@ -52,8 +52,22 @@ void free_tree(BTree* root) {
 
 void print_tree(BTree* root) {
 
-    
+/*     1
+ *   /   \
+ *  2     3
+ * / \   / \
+ *4   n n   n
 
+ *-- 1
+     |-- 2
+     |  |-- 4
+     |  |__ 5
+     |__ 3
+        |-- 6
+        |__ 7
+ *
+
+*/
 }
 
 int main() {
