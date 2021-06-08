@@ -1,13 +1,11 @@
 /*
  * the author assumes the tree is BST
- * this code has memory leak
 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define MAX_HEIGHT 1000
-#define INFINITY (1 << 20)
+#include "tree.h"
 
 typedef struct Tree Tree;
 
@@ -82,7 +80,8 @@ Tree * insert(int value, Tree * t) {
      *     4
      *    / \
      *   2   5
-     *
+     *  /
+     * 1
             */
 
     if (value < t -> element) 
@@ -102,39 +101,56 @@ Tree * insert(int value, Tree * t) {
 }
 
 Tree * delete(int value, Tree * t) {
-    //Deletes node from the tree
-    // Return a pointer to the resulting tree
 
     if (!t) return NULL;
 
     Tree * x;
-    Tree * tmp_cell;
 
-    if (value < t -> element) {
+    Tree * tmp;
+
+    if (value < t -> element) 
+        
         t -> left = delete(value, t -> left);
-    } else if (value > t -> element) {
+
+    else if (value > t -> element)
+        
         t -> right = delete(value, t -> right);
-    } else if (t -> left && t -> right) {
-        tmp_cell = find_min(t -> right);
-        t -> element = tmp_cell -> element;
+    
+    else if (t -> left && t -> right) {
+        
+        tmp = find_min(t -> right);
+        
+        t -> element = tmp -> element;
+        
         t -> right = delete(t -> element, t -> right);
+    
     } else {
-        tmp_cell = t;
+        
+        tmp = t;
+        
         if (t -> left == NULL)
+            
             t = t -> right;
+        
         else if (t -> right == NULL)
+            
             t = t -> left;
-        free(tmp_cell);
+        
+        free(tmp);
     }
 
     return t;
 }
 
-//printing tree in ascii
+/******************************************************
+ ***** **** **** printing tree in ascii
+******************************************************/
+
 
 typedef struct asciinode_struct asciinode;
 
 struct asciinode_struct {
+
     asciinode * left, * right;
 
     //length of the edge from this node to its children
@@ -153,6 +169,7 @@ struct asciinode_struct {
 
 
 int lprofile[MAX_HEIGHT];
+
 int rprofile[MAX_HEIGHT];
 
 //adjust gap between left and right nodes
@@ -162,35 +179,36 @@ int gap = 3;
 //this is the x coordinate of the next char printed
 int print_next;
 
-int MIN(int X, int Y) {
-    return ((X) < (Y)) ? (X) : (Y);
-}
-
-int MAX(int X, int Y) {
-    return ((X) > (Y)) ? (X) : (Y);
-}
 
 asciinode * build_ascii_tree_recursive(Tree * t) {
-    asciinode * node;
+    
+    if (!t) return NULL;
 
-    if (t == NULL) return NULL;
+    asciinode* node = calloc(1, sizeof(asciinode));
 
-    node = malloc(sizeof(asciinode));
+    if(!node) {
+        printf("calloc failed in build ascii function");
+        exit(-1);
+    }
+
     node -> left = build_ascii_tree_recursive(t -> left);
+    
     node -> right = build_ascii_tree_recursive(t -> right);
 
-    if (node -> left != NULL) {
+    if (node -> left != NULL) 
         node -> left -> parent_dir = -1;
-    }
+    
 
-    if (node -> right != NULL) {
+    if (node -> right != NULL) 
         node -> right -> parent_dir = 1;
-    }
+    
 
     sprintf(node -> label, "%d", t -> element);
+
     node -> lablen = strlen(node -> label);
 
     return node;
+
 }
 
 //Copy the tree into the ascii node structre
@@ -215,31 +233,51 @@ void free_ascii_tree(asciinode * node) {
 //is located at a position (x,y).  It assumes that the edge_length
 //fields have been computed for this tree.
 void compute_lprofile(asciinode * node, int x, int y) {
-    int i, isleft;
+    
     if (node == NULL) return;
+    
+    int i, isleft;
+
     isleft = (node -> parent_dir == -1);
+    
     lprofile[y] = MIN(lprofile[y], x - ((node -> lablen - isleft) / 2));
+    
     if (node -> left != NULL) {
-        for (i = 1; i <= node -> edge_length && y + i < MAX_HEIGHT; i++) {
+
+        for (i = 1; i <= node -> edge_length && y + i < MAX_HEIGHT; i++) 
+        
             lprofile[y + i] = MIN(lprofile[y + i], x - i);
-        }
+        
     }
+    
     compute_lprofile(node -> left, x - node -> edge_length - 1, y + node -> edge_length + 1);
+    
     compute_lprofile(node -> right, x + node -> edge_length + 1, y + node -> edge_length + 1);
+
 }
 
 void compute_rprofile(asciinode * node, int x, int y) {
+    
+    if (!node) return;
+    
     int i, notleft;
-    if (node == NULL) return;
+
     notleft = (node -> parent_dir != -1);
+    
     rprofile[y] = MAX(rprofile[y], x + ((node -> lablen - notleft) / 2));
+    
     if (node -> right != NULL) {
-        for (i = 1; i <= node -> edge_length && y + i < MAX_HEIGHT; i++) {
+        
+        for (i = 1; i <= node -> edge_length && y + i < MAX_HEIGHT; i++) 
+        
             rprofile[y + i] = MAX(rprofile[y + i], x + i);
-        }
+        
     }
+    
     compute_rprofile(node -> left, x - node -> edge_length - 1, y + node -> edge_length + 1);
+    
     compute_rprofile(node -> right, x + node -> edge_length + 1, y + node -> edge_length + 1);
+
 }
 
 //This function fills in the edge_length and 
