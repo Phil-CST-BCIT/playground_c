@@ -7,15 +7,6 @@
  *     we use the above command to detect memory leak.
  */
 
-typedef struct tree_node {
-
-    int data;
-
-    struct tree_node* left;
-
-    struct tree_node* right;
-
-} BTree;
 
 BTree* create_node(int data) {
 
@@ -51,43 +42,40 @@ void free_tree(BTree* root) {
 
 }
 
+int main() {
 
-int lprofile[MAX_HEIGHT];
+    // BTree bt = {1, NULL, NULL};
 
-int rprofile[MAX_HEIGHT];
+    // printf("%d\n", bt.data);
 
-//adjust gap between left and right nodes
-int gap = 3;
+    // char s[] = "hello world";
+    // char m[] = "bye bye";
+    // double d = 1.23456;
 
-//used for printing next node in the same level, 
-//this is the x coordinate of the next char printed
-int print_next;
+    // printf("%s %s\n", s, m);
+    // printf("%-15s %s\n", s, m);
+    // printf("%.3f\n", d);
 
-typedef struct asciinode_struct asciinode;
+    BTree* root = create_node(0);
 
-struct asciinode_struct {
+    // printf("root data = %d\n", root->data);
 
-    asciinode * left, * right;
+    print_ascii_tree(root);
 
-    //length of the edge from this node to its children
-    int edge_length;
+    free_tree(root);
 
-    int height;
+    return 0;
 
-    int lablen;
+}
 
-    //-1=I am left, 0=I am root, 1=right   
-    int parent_dir;
 
-    //max supported unit32 in dec, 10 digits max
-    char label[11];
-};
 
-asciinode * build_ascii_tree_recursive(BTree * t) {
+
+ASCII_TREE * build_ascii_tree_recursive(BTree * t) {
     
     if (!t) return NULL;
 
-    asciinode* node = calloc(1, sizeof(asciinode));
+    ASCII_TREE* node = calloc(1, sizeof(ASCII_TREE));
 
     if(!node) {
         printf("calloc failed in build ascii function");
@@ -115,8 +103,8 @@ asciinode * build_ascii_tree_recursive(BTree * t) {
 }
 
 //Copy the tree into the ascii node structre
-asciinode * build_ascii_tree(BTree * t) {
-    asciinode * node;
+ASCII_TREE* build_ascii_tree(BTree * t) {
+    ASCII_TREE* node;
     if (t == NULL) return NULL;
     node = build_ascii_tree_recursive(t);
     node -> parent_dir = 0;
@@ -124,7 +112,7 @@ asciinode * build_ascii_tree(BTree * t) {
 }
 
 //Free all the nodes of the given tree
-void free_ascii_tree(asciinode * node) {
+void free_ascii_tree(ASCII_TREE* node) {
     if (node == NULL) return;
     free_ascii_tree(node -> left);
     free_ascii_tree(node -> right);
@@ -135,7 +123,7 @@ void free_ascii_tree(asciinode * node) {
 //It assumes that the center of the label of the root of this tree
 //is located at a position (x,y).  It assumes that the edge_length
 //fields have been computed for this tree.
-void compute_lprofile(asciinode * node, int x, int y) {
+void compute_lprofile(ASCII_TREE* node, int x, int y) {
     
     if (node == NULL) return;
     
@@ -159,7 +147,7 @@ void compute_lprofile(asciinode * node, int x, int y) {
 
 }
 
-void compute_rprofile(asciinode * node, int x, int y) {
+void compute_rprofile(ASCII_TREE* node, int x, int y) {
     
     if (!node) return;
     
@@ -185,7 +173,7 @@ void compute_rprofile(asciinode * node, int x, int y) {
 
 //This function fills in the edge_length and 
 //height fields of the specified tree
-void compute_edge_lengths(asciinode * node) {
+void compute_edge_lengths(ASCII_TREE* node) {
     int h, hmin, i, delta;
     if (node == NULL) return;
     compute_edge_lengths(node -> left);
@@ -241,7 +229,7 @@ void compute_edge_lengths(asciinode * node) {
 
 //This function prints the given level of the given tree, assuming
 //that the node has the given x cordinate.
-void print_level(asciinode * node, int x, int level) {
+void print_level(ASCII_TREE* node, int x, int level) {
     int i, isleft;
     if (node == NULL) return;
     isleft = (node -> parent_dir == -1);
@@ -281,7 +269,7 @@ void print_level(asciinode * node, int x, int level) {
 
 //prints ascii tree for given Tree structure
 void print_ascii_tree(BTree * t) {
-    asciinode * proot;
+    ASCII_TREE* proot;
     int xmin, i;
     if (t == NULL) return;
     proot = build_ascii_tree(t);
@@ -303,31 +291,4 @@ void print_ascii_tree(BTree * t) {
         printf("(This tree is taller than %d, and may be drawn incorrectly.)\n", MAX_HEIGHT);
     }
     free_ascii_tree(proot);
-}
-
-
-int main() {
-
-    // BTree bt = {1, NULL, NULL};
-
-    // printf("%d\n", bt.data);
-
-    // char s[] = "hello world";
-    // char m[] = "bye bye";
-    // double d = 1.23456;
-
-    // printf("%s %s\n", s, m);
-    // printf("%-15s %s\n", s, m);
-    // printf("%.3f\n", d);
-
-    BTree* root = create_node(0);
-
-    // printf("root data = %d\n", root->data);
-
-    print_ascii_tree(root);
-
-    free_tree(root);
-
-    return 0;
-
 }
