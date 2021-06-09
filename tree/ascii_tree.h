@@ -1,13 +1,5 @@
-#define MAX_HEIGHT 1000
-#define INFINITY (1 << 20)
-
-#ifndef MAX
-#define MAX(x, y) ((x) > (y) ? (x) :(y))
-#endif
-
-#ifndef MIN
-#define MIN(x, y) ((x) < (y) ? (x) :(y))
-#endif
+#ifndef _ASCII_TREE_H_
+#define _ASCII_TREE_H_
 
 typedef struct tree_node {
 
@@ -37,24 +29,13 @@ typedef struct ascii_node {
     char label[11];
 } ASCII_TREE;
 
-int lprofile[MAX_HEIGHT];
-
-int rprofile[MAX_HEIGHT];
-
-//adjust gap between left and right nodes
-int gap = 3;
-
-//used for printing next node in the same level, 
-//this is the x coordinate of the next char printed
-int print_next;
-
-
 ASCII_TREE* build_ascii_tree_recursive(BTree*);
 ASCII_TREE* build_ascii_tree(BTree*);
-
 void free_ascii_tree(ASCII_TREE*);
 void compute_lprofile(ASCII_TREE*, int, int);
 void compute_rprofile(ASCII_TREE*, int, int);
 void compute_edge_lengths(ASCII_TREE*);
 void print_level(ASCII_TREE*, int, int);
 void print_ascii_tree(BTree*);
+
+#endif
