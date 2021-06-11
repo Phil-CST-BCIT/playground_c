@@ -17,7 +17,7 @@ typedef struct ascii_node {
 
     int lablen;
 
-    //-1=I am left, 0=I am root, 1=right   
+    //left: -1, root: 0, right: 1   
     int parent_dir;
 
     //max supported unit32 in dec, 10 digits max
