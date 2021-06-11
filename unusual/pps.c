@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+// this paste a token from two other tokens
 #define paste(front, back) front ## back
 
 int main() {
