@@ -3,9 +3,10 @@
 
 /** 
  * Note
- * 1. No matter what data type is, the size of a pointer is 64 bits for a 64-bit machine
- * 2. the size of node is 24 bytes not 20 bytes because of alignment.
- * 3. the online tutorials use two external variables to store head and tail 
+ * 1. the size of node is 24 bytes not 20 bytes because of alignment.
+ * 2. some online tutorials use two external variables to store head and tail
+      there are some benefits using this approach. It simplifies some opperations, and
+      O(1) time efficiency can be achieved.
  
  *   operations
  *   1. create
@@ -27,8 +28,6 @@
 
 DLL* create_node(long data) {
 
-    // calloc returns a pointer to space for an n objects, each of the size of the type/struct, 
-    // or NULL if the request cannot be satisfied.
     // The space is initialized to zero bytes.
     DLL* node = (DLL*)calloc(1, sizeof(DLL));
 
@@ -118,7 +117,7 @@ size_t length(DLL* head) {
 }
 
 
-// if we use size_t as the type of position, the actual parameter will have a coerce type conversion
+// using size_t for position creates a bug if postion < 0
 DLL* add_after(DLL* head, int data, int position) {
 
     // this will be meaningless if size_t is used
@@ -148,7 +147,6 @@ DLL* add_after(DLL* head, int data, int position) {
     }
 
 }
-
 
 void free_list(DLL* head) {
 
