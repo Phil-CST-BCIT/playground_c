@@ -73,7 +73,7 @@ BTree* insert_node(BTree* root, int data) {
 
         return n;
 
-    } else {
+    } else { /* we don't really need this else block, but we can use this as a gate keeper in case anything went wrong */
 
         return NULL;
 
@@ -81,8 +81,31 @@ BTree* insert_node(BTree* root, int data) {
 
 }
 
-int main() {
+// this version inserts a node into a balanced binary tree.
+// Rule: we check the left sub tree first, if the left is full, we insert the node into the right sub tree
 
+/* e.g. we insert 6 into [1, 2, 3, 4, 5]
+
+ * before:
+ *         1
+ *        / \
+ *       2   3
+ *      / \
+ *     4   5
+ 
+ * after: 
+ *         1
+ *        / \
+ *       /   \
+ *      2     3
+ *     / \   /
+ *    4   5 6
+*/
+BTree* insert_node_bal() {
+
+}
+
+int main() {
 
     BTree* root = create_node(0);
 
