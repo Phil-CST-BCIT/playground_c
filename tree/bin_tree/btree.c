@@ -101,8 +101,19 @@ BTree* insert_node(BTree* root, int data) {
  *     / \   /
  *    4   5 6
 */
-BTree* insert_node_bal() {
+BTree* insert_node_bal(BTree* root, int data) {
 
+    if(!root) {
+
+        BTree* tmp = create_node(data);
+
+        return tmp;
+
+    }
+
+    // 1. check left sub tree hight and right sub tree hight
+    // 2. does left child node have two nodes which are not null?
+    // 3. true -> insert right, false -> insert left
 }
 
 int main() {
