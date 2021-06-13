@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "btree.h"
-#include "ascii_tree.h"
+// #include "ascii_tree.h"
 
 /*
  * 1. leaks -atExit -- ./a.out | grep LEAK 
@@ -81,6 +81,12 @@ BTree* insert_node(BTree* root, int data) {
 
 }
 
+int compass(int n) {
+
+    return n % 2 == 0 ? (n - 2) / 2 : (n - 1) / 2;
+
+}
+
 // this version inserts a node into a balanced binary tree.
 // Rule: we check the left sub tree first, if the left is full, we insert the node into the right sub tree
 
@@ -100,33 +106,73 @@ BTree* insert_node(BTree* root, int data) {
  *      2     3
  *     / \   /
  *    4   5 6
+
+ * solution 1: we can store each node pointer in an array
+ * solution 2: create a static or external int variable and increment the variable by one when we insert one node 
 */
 BTree* insert_node_bal(BTree* root, int data) {
+
+    // static int number_nodes;
 
     if(!root) {
 
         BTree* tmp = create_node(data);
 
+        // ++number_nodes;
+
+        printf("%d\n", number_nodes);
+
         return tmp;
 
     }
 
-    // 1. check left sub tree hight and right sub tree hight
-    // 2. does left child node have two nodes which are not null?
-    // 3. true -> insert right, false -> insert left
+    // int* road_map = (int*) calloc(NUM_OF_STEPS, sizeof(int));
+
+    // if(!road_map) {
+    //     printf("free store allocation failed in insert node");
+    //     exit(-1);
+    // }
+
+    // int tmp, i, j;
+    
+    // tmp = i = j = number_nodes;
+
+    // while(!tmp) {
+
+    //     tmp = compass(tmp);
+
+    //     --index;
+
+    //     *(road_map + index) = tmp;
+
+    // }
+
+    // while(j > 0) {
+        
+    //     int* ip = road_map; // 0 1 2
+
+    //     free(ip) // 0 1 2
+
+    //     road_map += 1; // 1 2 3
+
+    //     --j; // 2 1 0
+        
+    // }
+
+    return NULL;
 }
 
 int main() {
 
-    BTree* root = create_node(0);
+    // BTree* root = create_node(0);
 
-    print_ascii_tree(root);
+    // print_ascii_tree(root);
 
-    insert_node(root, 1);
+    // insert_node(root, 1);
 
-    print_ascii_tree(root);
+    // print_ascii_tree(root);
 
-    free_tree(root);
+    // free_tree(root);
 
     return 0;
 
