@@ -112,13 +112,13 @@ int compass(int n) {
 */
 BTree* insert_node_bal(BTree* root, int data) {
 
-    // static int number_nodes;
+    static int number_nodes;
 
     if(!root) {
 
         BTree* tmp = create_node(data);
 
-        // ++number_nodes;
+        ++number_nodes;
 
         printf("%d\n", number_nodes);
 
@@ -126,7 +126,15 @@ BTree* insert_node_bal(BTree* root, int data) {
 
     }
 
-    // int* road_map = (int*) calloc(NUM_OF_STEPS, sizeof(int));
+    int tmp , num_steps = 1;
+
+    tmp = number_nodes;
+
+    while((tmp = tmp % 2) != 0)
+        ++num_steps;
+
+
+    // int* road_map = (int*) calloc(num_steps, sizeof(int));
 
     // if(!road_map) {
     //     printf("free store allocation failed in insert node");
