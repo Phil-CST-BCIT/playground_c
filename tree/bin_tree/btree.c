@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "btree.h"
-// #include "ascii_tree.h"
+#include "ascii_tree.h"
 
 /*
  * 1. leaks -atExit -- ./a.out | grep LEAK 
@@ -83,7 +83,7 @@ BTree* insert_node(BTree* root, int data) {
 
 int compass(int n) {
 
-    return n % 2 == 0 ? (n - 2) / 2 : (n - 1) / 2;
+    return n % 2 != 0 ? (n - 1) / 2 : (n - 2) / 2;
 
 }
 
@@ -112,6 +112,8 @@ int compass(int n) {
 */
 BTree* insert_node_bal(BTree* root, int data) {
 
+    /* somewhere in the code has mem leak */
+
     static int number_nodes;
 
     if(!root) {
@@ -126,53 +128,101 @@ BTree* insert_node_bal(BTree* root, int data) {
 
     }
 
-    int tmp , num_steps = 1;
+    int i, j, num_steps = 0;
 
-    tmp = number_nodes;
+    i = number_nodes;
 
-    while((tmp = tmp % 2) != 0)
+    while(i != 0) {
+        
+        i = compass(i);
+        
         ++num_steps;
 
+    }
 
-    // int* road_map = (int*) calloc(num_steps, sizeof(int));
+    int* road_map = (int*) calloc(num_steps, sizeof(int));
 
-    // if(!road_map) {
-    //     printf("free store allocation failed in insert node");
-    //     exit(-1);
-    // }
+    if(!road_map) {
+        printf("free store allocation failed");
+        exit(-1);
+    }
 
-    // int tmp, i, j;
-    
-    // tmp = i = j = number_nodes;
+    j = num_steps;
 
-    // while(!tmp) {
+    i = number_nodes;
 
-    //     tmp = compass(tmp);
+    while(num_steps > 0) {
 
-    //     --index;
+        i = compass(i);
 
-    //     *(road_map + index) = tmp;
+        *(road_map + (num_steps - 1)) = i; // e.g. num_nodes = 3 -> [ 0, 1 ]
 
-    // }
+        --num_steps;
+    }
 
-    // while(j > 0) {
+    num_steps = j;
+
+    int* tmp = road_map;
+
+    BTree* tmp_node = root;
+
+    while(num_steps > 0) {
+
+        BTree* parent = tmp_node;
+
+        if(*tmp == 0 && tmp_node->right) {
+
+            tmp_node = tmp_node->left;
+
+        } else if (*tmp % 2 == 0) {
+            
+            tmp_node = tmp_node->right;
+            
+            if(!tmp_node) {
+            
+                tmp_node = create_node(data);
+            
+                parent->right = tmp_node;
+            
+            }
+
+        } else {
+            
+            tmp_node = tmp_node->left;
+            
+            if(!tmp_node) {
         
-    //     int* ip = road_map; // 0 1 2
-
-    //     free(ip) // 0 1 2
-
-    //     road_map += 1; // 1 2 3
-
-    //     --j; // 2 1 0
+                tmp_node = create_node(data);
         
-    // }
+                parent->left = tmp_node;
+            
+            }
+        }
 
-    return NULL;
+        tmp += 1;
+
+        --num_steps;
+    }
+
+
+    while(j > 0) {
+        
+        int* ip = road_map; // 0 1 2
+
+        free(ip); // 0 1 2
+
+        road_map += 1; // 1 2 3
+
+        --j; // 2 1 0
+        
+    }
+
+    return tmp_node;
 }
 
 int main() {
 
-    // BTree* root = create_node(0);
+    BTree* root = create_node(0);
 
     // print_ascii_tree(root);
 
@@ -180,7 +230,12 @@ int main() {
 
     // print_ascii_tree(root);
 
-    // free_tree(root);
+    insert_node_bal(root, 1);
+    insert_node_bal(root, 2);
+
+    print_ascii_tree(root);
+
+    free_tree(root);
 
     return 0;
 
