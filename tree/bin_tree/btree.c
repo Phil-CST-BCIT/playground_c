@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "btree.h"
-#include "ascii_tree.h"
+// #include "ascii_tree.h"
 
 /*
  * 1. leaks -atExit -- ./a.out | grep LEAK 
@@ -87,6 +87,54 @@ int compass(int n) {
 
 }
 
+int steps(int n) {
+
+    int s = 0;
+
+    while(n > 0) {
+
+        ++s;
+
+        n = compass(n);
+
+    }
+
+    return s;
+
+}
+
+int* road_map(int i) {
+    
+    int s = steps(i);;
+
+    int* rm = (int*) calloc(s, sizeof(int));
+
+    if(!rm) {
+    
+        printf("free store allocation failed!");
+    
+        exit(-1);
+    
+    }
+
+    int* tmp = rm;
+
+    while(s > 0) {
+
+        --s;
+
+        i = compass(i);
+
+        *(tmp + s) = i;
+
+        printf("%d\n", *(tmp+s));
+
+    }
+
+    return rm;
+
+}
+
 // this version inserts a node into a balanced binary tree.
 // Rule: we check the left sub tree first, if the left is full, we insert the node into the right sub tree
 
@@ -116,6 +164,13 @@ BTree* insert_node_bal(BTree* root, int data) {
 
     static int number_nodes;
 
+    // if the root is null, we create a new node, increment the counter by one and return the new node
+    // else 
+    //     1. we know the number of nodes
+    //     2. we need to know how to go to the last leaf
+    //     3. the index of the new node will be the number of current nodes
+    //     4. get the index of its parent
+
     if(!root) {
 
         BTree* tmp = create_node(data);
@@ -128,101 +183,17 @@ BTree* insert_node_bal(BTree* root, int data) {
 
     }
 
-    int i, j, num_steps = 0;
+    int new_index = number_nodes;
 
-    i = number_nodes;
-
-    while(i != 0) {
-        
-        i = compass(i);
-        
-        ++num_steps;
-
-    }
-
-    int* road_map = (int*) calloc(num_steps, sizeof(int));
-
-    if(!road_map) {
-        printf("free store allocation failed");
-        exit(-1);
-    }
-
-    j = num_steps;
-
-    i = number_nodes;
-
-    while(num_steps > 0) {
-
-        i = compass(i);
-
-        *(road_map + (num_steps - 1)) = i; // e.g. num_nodes = 3 -> [ 0, 1 ]
-
-        --num_steps;
-    }
-
-    num_steps = j;
-
-    int* tmp = road_map;
-
-    BTree* tmp_node = root;
-
-    while(num_steps > 0) {
-
-        BTree* parent = tmp_node;
-
-        if(*tmp == 0 && tmp_node->right) {
-
-            tmp_node = tmp_node->left;
-
-        } else if (*tmp % 2 == 0) {
-            
-            tmp_node = tmp_node->right;
-            
-            if(!tmp_node) {
-            
-                tmp_node = create_node(data);
-            
-                parent->right = tmp_node;
-            
-            }
-
-        } else {
-            
-            tmp_node = tmp_node->left;
-            
-            if(!tmp_node) {
-        
-                tmp_node = create_node(data);
-        
-                parent->left = tmp_node;
-            
-            }
-        }
-
-        tmp += 1;
-
-        --num_steps;
-    }
+    int* rm = road_map(new_index);
 
 
-    while(j > 0) {
-        
-        int* ip = road_map; // 0 1 2
-
-        free(ip); // 0 1 2
-
-        road_map += 1; // 1 2 3
-
-        --j; // 2 1 0
-        
-    }
-
-    return tmp_node;
+    // return NULL;
 }
 
 int main() {
 
-    BTree* root = create_node(0);
+    // BTree* root = create_node(0);
 
     // print_ascii_tree(root);
 
@@ -230,12 +201,18 @@ int main() {
 
     // print_ascii_tree(root);
 
-    insert_node_bal(root, 1);
-    insert_node_bal(root, 2);
+    // insert_node_bal(root, 1);
+    // insert_node_bal(root, 2);
 
-    print_ascii_tree(root);
+    // print_ascii_tree(root);
 
-    free_tree(root);
+    // free_tree(root);
+
+    int* rm = road_map(4);
+
+    int s = steps(4);
+
+    free(rm);
 
     return 0;
 
