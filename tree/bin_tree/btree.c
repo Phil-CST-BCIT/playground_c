@@ -135,18 +135,17 @@ int* road_map(int i) {
 
 }
 
-// this version inserts a node into a balanced binary tree.
-// Rule: we check the left sub tree first, if the left is full, we insert the node into the right sub tree
+/* this version inserts a node into a balanced binary tree.
+   Rule: we check the left sub tree first, if the left is full, we insert the node into the right sub tree
+   solution: create a static or external int variable and increment the variable by one when we insert one node 
 
-/* e.g. we insert 6 into [1, 2, 3, 4, 5]
-
- * before:
- *         1
- *        / \
- *       2   3
- *      / \
- *     4   5
- 
+ e.g. we insert 6 into [1, 2, 3, 4, 5]
+ * before:                               
+ *         1                     
+ *        / \                    
+ *       2   3                   
+ *      / \                  
+ *     4   5                     
  * after: 
  *         1
  *        / \
@@ -154,13 +153,8 @@ int* road_map(int i) {
  *      2     3
  *     / \   /
  *    4   5 6
-
- * solution 1: we can store each node pointer in an array
- * solution 2: create a static or external int variable and increment the variable by one when we insert one node 
 */
 BTree* insert_node_bal(BTree* root, int data) {
-
-    /* somewhere in the code has mem leak */
 
     static int number_nodes;
 
@@ -186,6 +180,11 @@ BTree* insert_node_bal(BTree* root, int data) {
     int new_index = number_nodes;
 
     int* rm = road_map(new_index);
+
+    // create a tmp node pointer and assign root to the pointer
+    // start from 0, if the element in rm is an odd number, go left, else go right
+    // stop at the last element
+    // if new_index is odd, insert left, else insert right
 
 
     // return NULL;
