@@ -6,8 +6,11 @@
 int main() {
 
     int xy = 1;
+    int x = 2;
+    int y = 3;
 
-    printf("%d", paste(x, y));
+    printf("%d, %d\n", x, y);
+    printf("%d\n", paste(x, y));
 
     return 0;
 }
