@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "btree.h"
-// #include "ascii_tree.h"
+#include "ascii_tree.h"
 
 /*
  * 1. leaks -atExit -- ./a.out | grep LEAK 
@@ -127,7 +127,7 @@ int* road_map(int i) {
 
         *(tmp + s) = i;
 
-        printf("%d\n", *(tmp+s));
+        // printf("%d\n", *(tmp+s));
 
     }
 
@@ -171,8 +171,6 @@ BTree* insert_node_bal(BTree* root, int data) {
 
         ++number_nodes;
 
-        printf("%d\n", number_nodes);
-
         return tmp;
 
     }
@@ -185,14 +183,39 @@ BTree* insert_node_bal(BTree* root, int data) {
     // start from 0, if the element in rm is an odd number, go left, else go right
     // stop at the last element
     // if new_index is odd, insert left, else insert right
+    BTree* parent = root;
+    BTree* child = NULL;
+    
+    int s = steps(number_nodes);
 
+    while(s > 0) {
 
-    // return NULL;
+        --s;
+        
+        if(!s) {   
+
+            child = create_node(data);
+
+            ++number_nodes;
+            
+            if(!parent->left)
+                parent->left = child;
+            else
+                parent->right = child;
+        
+        } 
+    }
+
+    printf("%d\n", number_nodes);
+
+    free(rm);
+
+    return child;
 }
 
 int main() {
 
-    // BTree* root = create_node(0);
+    BTree* root = insert_node_bal(NULL, 0);
 
     // print_ascii_tree(root);
 
@@ -200,18 +223,17 @@ int main() {
 
     // print_ascii_tree(root);
 
-    // insert_node_bal(root, 1);
-    // insert_node_bal(root, 2);
+    insert_node_bal(root, 1);
+    insert_node_bal(root, 2);
+    print_ascii_tree(root);
 
-    // print_ascii_tree(root);
+    free_tree(root);
 
-    // free_tree(root);
+    // int* rm = road_map(7);
 
-    int* rm = road_map(4);
+    // int s = steps(7);
 
-    int s = steps(4);
-
-    free(rm);
+    // free(rm);
 
     return 0;
 
